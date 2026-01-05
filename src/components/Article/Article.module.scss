@@ -1,0 +1,30 @@
+.link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: #363636;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+
+    position: absolute;
+    bottom: 50px;
+    left: 50px;
+
+    svg {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        transition: transform 0.2s ease-in-out;
+        fill: currentColor;
+    }
+
+    &:hover {
+        color: #000;
+        text-decoration: underline;
+    }
+
+    &:hover svg {
+        transform: translateX(-3px);
+    }
+}
