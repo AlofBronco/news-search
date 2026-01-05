@@ -11,12 +11,24 @@ import EastIcon from "@mui/icons-material/East";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import css from "./Card.module.scss";
 import { dateFormat } from "../../utils/dateFormat";
+import { useHighlight } from "../../hooks/useHighlight";
+import { useKeywordStore } from "../../store/news";
 
 interface CardProps {
   article: Article;
 }
 
 const Card = ({ article }: CardProps) => {
+  const keywords = useKeywordStore((state) => state.keywords);
+
+  const highlightedTitle = useHighlight(article.title, keywords);
+  const highlightedSummary = useHighlight(
+    article.summary.length < 100
+      ? article.summary
+      : article.summary.slice(0, 100) + "...",
+    keywords,
+  );
+
   return (
     <CardBlock className={css.card}>
       <CardMedia
@@ -34,8 +46,7 @@ const Card = ({ article }: CardProps) => {
 
         <Stack spacing={2} height="100%" flexDirection="column">
           <Typography variant="h2" className={css.title}>
-            {/*{highlightText(article.title, query)}*/}
-            {article.title}
+            {highlightedTitle}
           </Typography>
 
           <Typography
@@ -43,8 +54,7 @@ const Card = ({ article }: CardProps) => {
             color="text.secondary"
             className={css.text}
           >
-            {/*{highlightText(article.summary.slice(0, 100), query)}...*/}
-            {article.summary.slice(0, 100) + "..."}
+            {highlightedSummary}
           </Typography>
 
           <Link to={`/news/${article.id}`} className={css.link}>

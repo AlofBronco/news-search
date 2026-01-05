@@ -1,4 +1,4 @@
-export function dateFormat(iso: string): string {
+export const dateFormat = (iso: string): string => {
   const date = new Date(iso);
 
   const formatted = date.toLocaleDateString("en-US", {
@@ -25,4 +25,4 @@ export function dateFormat(iso: string): string {
   const day = date.getDate();
 
   return formatted.replace(String(day), withOrdinal(day));
-}
+};

@@ -8,13 +8,20 @@ import {
   Divider,
   Box,
   Typography,
+  CircularProgress,
 } from "@mui/material";
 import Cards from "../Cards/Cards";
 import css from "./Home.module.scss";
 import SearchInput from "../SearchInput/SearchInput";
-import FullScreenLoader from "../FullScreenLoader/FullScreenLoader";
+import { useKeywordStore } from "../../store/news";
+import { useMemo } from "react";
+import { useDebounce } from "../../hooks/useDebounce";
+import { sortByKeywordPriority } from "../../utils/sortByKeywordPriority";
 
 const Home = () => {
+  const keywords = useKeywordStore((state) => state.keywords);
+  const debouncedKeywords = useDebounce(keywords, 300);
+
   const {
     data,
     fetchNextPage,
@@ -23,16 +30,17 @@ const Home = () => {
     isLoading,
     error,
   } = useInfiniteQuery({
-    queryKey: ["news"],
-    queryFn: ({ pageParam }) => fetchNews(pageParam),
+    queryKey: ["news", debouncedKeywords],
+    queryFn: ({ pageParam }) => fetchNews(debouncedKeywords, pageParam),
     initialPageParam: undefined,
     getNextPageParam: (lastPage: FetchNewsResponse) =>
       lastPage.next ?? undefined,
   });
 
-  const articles = data?.pages.flatMap((page) => page.results) ?? [];
-
-  if (isLoading) return <FullScreenLoader open={true} />;
+  const articles = useMemo(() => {
+    const flat = data?.pages.flatMap((page) => page.results) ?? [];
+    return sortByKeywordPriority(flat, debouncedKeywords);
+  }, [data, debouncedKeywords]);
 
   if (error)
     return (
@@ -42,19 +50,28 @@ const Home = () => {
       </Typography>
     );
 
-  if (!data) return null;
-
   return (
     <Container sx={{ py: 4 }}>
       <SearchInput />
       <Box sx={{ mb: 3 }}>
         <Typography variant="body2" fontWeight={600} fontSize="1rem">
-          Results: {data?.pages.at(-1)?.count}
+          Results: {articles.length}
         </Typography>
         <Divider sx={{ mb: 3 }} />
       </Box>
       <Grid container spacing={3} columns={3} className={css.grid}>
         <Cards articles={articles} />
+        {isLoading && (
+          <CircularProgress
+            color="inherit"
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+            }}
+          />
+        )}
       </Grid>
       {hasNextPage && (
         <Button
