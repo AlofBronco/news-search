@@ -1,6 +1,6 @@
 import { Box, Card, CardContent, Container, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
-import { Link, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { fetchNewsById } from "../../services/newsService";
 import WestIcon from "@mui/icons-material/West";
 import css from "./Article.module.scss";
@@ -9,6 +9,11 @@ import FullScreenLoader from "../FullScreenLoader/FullScreenLoader";
 const Article = () => {
   const { id } = useParams();
   const articleId = id ? Number(id) : undefined;
+
+  const navigate = useNavigate();
+  const goBack = () => {
+    navigate(-1);
+  };
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["news", articleId],
@@ -65,10 +70,10 @@ const Article = () => {
           </CardContent>
         </Card>
       </Container>
-      <Link to={-1} className={css.link}>
+      <button onClick={goBack} className={css.link}>
         <WestIcon />
         Back to homepage
-      </Link>
+      </button>
     </>
   );
 };

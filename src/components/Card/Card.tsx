@@ -32,13 +32,17 @@ const Card = ({ article }: CardProps) => {
           <CalendarTodayIcon /> {dateFormat(article.published_at)}
         </Typography>
 
-        <Stack spacing={2}>
+        <Stack spacing={2} height="100%" flexDirection="column">
           <Typography variant="h2" className={css.title}>
             {/*{highlightText(article.title, query)}*/}
             {article.title}
           </Typography>
 
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            className={css.text}
+          >
             {/*{highlightText(article.summary.slice(0, 100), query)}...*/}
             {article.summary.slice(0, 100) + "..."}
           </Typography>

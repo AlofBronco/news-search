@@ -30,6 +30,16 @@
         word-break: break-word;
     }
 
+    .text {
+        line-height: 1.4em;
+        height: calc(1.4em * 3);
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        word-break: break-word;
+    }
+
     .link {
         display: inline-flex;
         align-items: center;
